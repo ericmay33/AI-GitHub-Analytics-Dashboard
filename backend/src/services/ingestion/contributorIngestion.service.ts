@@ -1,8 +1,12 @@
 import { prisma } from "../../prisma/client";
 import { fetchRepoContributors } from "../github/contributorFetcher";
 
-export async function ingestContributors(owner: string, repo: string) {
-  const contributors = await fetchRepoContributors(owner, repo);
+export async function ingestContributors(
+  owner: string,
+  repoName: string,
+  repoId: string
+) {
+  const contributors = await fetchRepoContributors(owner, repoName);
 
   const results = [];
 
@@ -28,13 +32,13 @@ export async function ingestContributors(owner: string, repo: string) {
       where: {
         contributorId_repoId: {
           contributorId: contributor.id,
-          repoId: repo,
+          repoId,
         },
       },
       update: {},
       create: {
         contributorId: contributor.id,
-        repoId: repo,
+        repoId,
       },
     });
 
