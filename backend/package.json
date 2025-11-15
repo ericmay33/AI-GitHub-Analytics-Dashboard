@@ -4,7 +4,9 @@
   "main": "index.js",
   "scripts": {
     "dev": "ts-node-dev --respawn src/server.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prisma:migrate": "dotenv -e .env -- npx prisma migrate dev",
+    "prisma:generate": "dotenv -e .env -- npx prisma generate"
   },
   "keywords": [],
   "author": "",
@@ -22,6 +24,7 @@
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.5",
     "@types/node": "^24.10.1",
+    "dotenv-cli": "^11.0.0",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.9.3"
