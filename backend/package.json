@@ -6,7 +6,8 @@
     "dev": "ts-node-dev --respawn src/server.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prisma:migrate": "dotenv -e .env -- npx prisma migrate dev",
-    "prisma:generate": "dotenv -e .env -- npx prisma generate"
+    "prisma:generate": "dotenv -e .env -- npx prisma generate",
+    "prisma:studio": "dotenv -e .env -- npx prisma studio"
   },
   "keywords": [],
   "author": "",

@@ -9,6 +9,6 @@ const router = Router();
 router.use("/repos", repoRoutes);
 router.use("/prs", prRoutes);
 router.use("/issues", issueRoutes);
-router.use("/sync", syncRoutes);'
+router.use("/sync", syncRoutes);
 
 export default router;
