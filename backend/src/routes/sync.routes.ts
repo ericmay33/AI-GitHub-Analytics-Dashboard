@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { syncRepository } from "../controllers/sync.controller";
+import * as syncController from "../controllers/sync.controller";
 
 const router = Router();
 
-router.post("/", syncRepository);
+router.post("/", syncController.syncRepository);
 
 export default router;
