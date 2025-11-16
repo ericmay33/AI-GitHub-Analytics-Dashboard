@@ -1,11 +1,11 @@
-import OpenAI from "openai";
+import Groq from "groq-sdk";
 import { ENV } from "../../config/env";
 
 // ----------------------------------------
-// Create OpenAI Client
+// Create Groq Client
 // ----------------------------------------
-export const openai = new OpenAI({
-  apiKey: ENV.OPENAI_API_KEY,
+export const groq = new Groq({
+  apiKey: ENV.GROQ_API_KEY,
 });
 
 // ----------------------------------------
@@ -14,7 +14,7 @@ export const openai = new OpenAI({
 export async function generateText({
   system,
   user,
-  model = "gpt-4.1-mini",
+  model = "llama-3.3-70b-versatile",
   temperature = 0.3,
 }: {
   system?: string;
@@ -28,7 +28,7 @@ export async function generateText({
   }
   messages.push({ role: "user", content: user });
 
-  const response = await openai.chat.completions.create({
+  const response = await groq.chat.completions.create({
     model,
     temperature,
     messages,
@@ -43,34 +43,47 @@ export async function generateText({
 export async function generateStructured<T>({
   system,
   user,
-  model = "gpt-4.1-mini",
+  model = "llama-3.3-70b-versatile",
 }: {
   system?: string;
   user: string;
   schema?: any; // keep param for future if you want, or remove
   model?: string;
 }): Promise<T> {
-  // Build a plain text prompt — NOT chat messages
-  let prompt = "";
-  if (system) prompt += `System:\n${system}\n\n`;
-  prompt += `User:\n${user}\n\n`;
-  prompt +=
-    "Return ONLY a single valid JSON object. No extra text, no code fences, no explanation.";
+  const messages: Array<{ role: "system" | "user"; content: string }> = [];
+  if (system) {
+    messages.push({ role: "system", content: system });
+  }
+  
+  // Add JSON mode instruction to user prompt
+  const userPromptWithJson = `${user}\n\nReturn ONLY a single valid JSON object. No extra text, no code fences, no explanation.`;
+  messages.push({ role: "user", content: userPromptWithJson });
 
-  const response = await openai.responses.create({
+  // Groq supports OpenAI-compatible API, but response_format may not be supported
+  // We rely on prompt instructions for JSON output
+  const response = await groq.chat.completions.create({
     model,
-    input: prompt,
+    messages,
+    temperature: 0.3,
   });
 
-  const text = response.output_text;
+  const text = response.choices[0].message.content;
   if (!text) {
-    throw new Error("OpenAI returned empty structured output");
+    throw new Error("Groq returned empty structured output");
   }
 
   try {
-    return JSON.parse(text) as T;
+    // Clean up the response - remove markdown code fences if present
+    let cleanedText = text.trim();
+    if (cleanedText.startsWith("```json")) {
+      cleanedText = cleanedText.replace(/^```json\s*/, "").replace(/\s*```$/, "");
+    } else if (cleanedText.startsWith("```")) {
+      cleanedText = cleanedText.replace(/^```\s*/, "").replace(/\s*```$/, "");
+    }
+    
+    return JSON.parse(cleanedText) as T;
   } catch (err: any) {
-    console.error("Failed to parse JSON from OpenAI:", text);
+    console.error("Failed to parse JSON from Groq:", text);
     throw new Error("Failed to parse structured JSON: " + err.message);
   }
 }

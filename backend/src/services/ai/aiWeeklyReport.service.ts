@@ -199,7 +199,7 @@ Generate a weekly report with:
 
 Return the report as a JSON object matching this exact structure.`;
 
-  // Generate structured AI report
+  // Generate structured AI report using Groq
   const weeklyReport = await generateStructured<AIWeeklyReport>({
     system: systemPrompt,
     user: userPrompt,

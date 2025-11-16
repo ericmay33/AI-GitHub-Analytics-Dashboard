@@ -75,7 +75,7 @@ Generate:
 `;
 
   // -------------------------------
-  // Call OpenAI
+  // Call Groq AI
   // -------------------------------
   const aiOutput = await generateStructured<PRSummaryAIOutput>({
     system: systemPrompt,

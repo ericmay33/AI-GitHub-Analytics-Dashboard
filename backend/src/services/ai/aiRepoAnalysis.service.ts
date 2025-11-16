@@ -111,7 +111,7 @@ Analyze this repository and provide:
 
 Return the analysis as a JSON object matching this exact structure.`;
 
-  // Generate structured AI analysis
+  // Generate structured AI analysis using Groq
   const aiAnalysis = await generateStructured<AIRepoAnalysis>({
     system: systemPrompt,
     user: userPrompt,

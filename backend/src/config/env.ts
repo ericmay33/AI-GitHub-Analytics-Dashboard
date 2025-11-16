@@ -5,5 +5,5 @@ dotenv.config();
 export const ENV = {
   PORT: parseInt(process.env.PORT || "4000", 10),
   GITHUB_TOKEN: process.env.GITHUB_TOKEN || "",
-  OPENAI_API_KEY: process.env.OPENAI_API_KEY || ""
+  GROQ_API_KEY: process.env.GROQ_API_KEY || ""
 };
